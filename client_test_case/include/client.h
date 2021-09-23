@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:01
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-22 14:15:03
+ * @LastEditTime: 2021-09-23 13:54:24
  */
 
 #pragma once
@@ -13,6 +13,11 @@
 #define CLIENT_H_H
 
 #include "open62541.h"
+
+#define ASSERT_GOOD(X)           \
+    if (X != UA_STATUSCODE_GOOD) \
+        return X;
+
 /**
  * @author: xptd
  * @brief: 
@@ -52,6 +57,34 @@ UA_StatusCode client_get_endpoint(const char *server_url, size_t *endpoint_nums,
  * @param {size_t} endpoint_nums
  * @param {UA_EndpointDescription} *endpoint_des
  */
-void clien_dump_endpoints(size_t endpoint_nums, UA_EndpointDescription *endpoint_des);
+void client_dump_endpoints(size_t endpoint_nums, UA_EndpointDescription *endpoint_des);
+
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ *  start_nodeid:'root' nodeid
+ *  paths_browsename[]:browsnames([]:array )
+ *  indexs[]:namespace index
+ *  refer_ids[]:source ---reference---target
+ *  path_nums:path tiers /A/B/C/D
+ * @output:     
+ *  target_nodeid: browsename to nodeid
+ * @return {*}
+ * @others: 
+ */
+
+UA_StatusCode client_browse_name2nodeid_single(UA_Client *client, UA_NodeId start_nodeid, const char* paths_browsename[], UA_Int32 indexs[],UA_UInt32 refer_ids[],size_t path_nums,UA_NodeId *target_nodeid);
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ *  target nodeid(pointer)
+ * @output: 
+ * @return {*}
+ * @others: 
+ */
+void print_nodeid(const UA_NodeId*);
+
 
 #endif
