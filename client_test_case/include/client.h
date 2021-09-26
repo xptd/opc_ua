@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:01
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-23 13:54:24
+ * @LastEditTime: 2021-09-24 15:39:12
  */
 
 #pragma once
@@ -74,7 +74,13 @@ void client_dump_endpoints(size_t endpoint_nums, UA_EndpointDescription *endpoin
  * @others: 
  */
 
-UA_StatusCode client_browse_name2nodeid_single(UA_Client *client, UA_NodeId start_nodeid, const char* paths_browsename[], UA_Int32 indexs[],UA_UInt32 refer_ids[],size_t path_nums,UA_NodeId *target_nodeid);
+UA_StatusCode client_browse_name2nodeid_single(UA_Client *client, 
+    UA_NodeId start_nodeid, 
+    const char* paths_browsename[],
+    UA_Int32 indexs[],
+    UA_UInt32 refer_ids[],
+    size_t path_nums,
+    UA_NodeId *target_nodeid);
 /**
  * @author: xptd
  * @brief: 
@@ -85,6 +91,71 @@ UA_StatusCode client_browse_name2nodeid_single(UA_Client *client, UA_NodeId star
  * @others: 
  */
 void print_nodeid(const UA_NodeId*);
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ *  start_id:'root nodeid'
+ * @output: 
+ * @return {*}
+ * @others: 
+ */
 
+UA_StatusCode client_simplified_browse_node(UA_Client *client, UA_NodeId start_id);
 
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ * @param {UA_Client} *client
+ * @param {UA_NodeId} start_id
+ */
+UA_StatusCode client_recursive_browse_node(UA_Client *client, UA_NodeId start_id);
+
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ */
+UA_StatusCode client_read_single(UA_Client *client, UA_NodeId node_id,const UA_DataType* data_type,UA_Variant *value);
+
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ */
+UA_StatusCode client_write_single(UA_Client *client, UA_NodeId node_id, const UA_Variant *value);
+
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ */
+UA_StatusCode client_read_mutil(UA_Client *client, UA_NodeId node_ids[],  UA_Variant values[],size_t nums);
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ * @param {UA_Client} *client
+ * @param {UA_NodeId} node_ids
+ * @param {UA_Variant} values
+ * @param {size_t} nums
+ */
+
+UA_StatusCode client_write_mutil(UA_Client *client, UA_NodeId node_ids[],  UA_Variant values[],size_t nums);
 #endif

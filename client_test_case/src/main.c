@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 13:38:07
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-23 16:21:22
+ * @LastEditTime: 2021-09-24 15:23:55
  */
 /*================================================================
 *   Copyright (C) 2021 PANDA Ltd. All rights reserved.
@@ -123,6 +123,189 @@ END_TEST
 
 
 
+START_TEST(client_simplified_browse_node_test)
+{
+    UA_StatusCode  retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if(retval != UA_STATUSCODE_GOOD)
+       goto __done;
+
+   retval = client_simplified_browse_node(client, UA_NODEID_NUMERIC(0,UA_NS0ID_OBJECTSFOLDER));
+   if (retval != UA_STATUSCODE_GOOD)
+       goto __done;
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+
+
+START_TEST(client_recursive_browse_node_test)
+{
+    UA_StatusCode retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+
+    fprintf(stdout,"%-9s %-16s %-30s %-30s\n", "NAMESPACE", "NODEID", "BROWSE NAME", "DISPLAY NAME");
+    retval = client_recursive_browse_node(client, UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER));
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+
+   
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+START_TEST(client_read_single_test)
+{
+    UA_StatusCode retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+
+    //UA_Variant value = UA_Variant_new();
+    UA_Variant value;
+    retval = client_read_single(client, UA_NODEID_NUMERIC(0, 50222), &UA_TYPES[UA_TYPES_STRING], &value);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+
+    UA_String str = *(UA_String *)value.data;
+    fprintf(stdout,"client_read_attribute_test:value:%s\n",str.data);
+    
+
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+START_TEST(client_write_single_test)
+{
+    UA_StatusCode retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+    UA_Variant *value = UA_Variant_new();
+    UA_String test_str = UA_STRING("HELLO WORLD!");
+    UA_Variant_setScalarCopy(value, &test_str, &UA_TYPES[UA_TYPES_STRING]);
+    retval = client_write_single(client, UA_NODEID_NUMERIC(0, 50222), value);
+    UA_Variant_delete(value);//notice;
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+
+
+
+START_TEST(client_write_mutil_test)
+{
+    UA_StatusCode retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+    
+#define WRITE_NUMS 2
+    //name //index
+    UA_NodeId node_ids[WRITE_NUMS] = {UA_NODEID_NUMERIC(0, 50222), UA_NODEID_NUMERIC(0, 50223)};
+
+    UA_Variant *obj_values = UA_Array_new(WRITE_NUMS, &UA_TYPES[UA_TYPES_VARIANT]);
+    if(NULL == obj_values)
+    {
+        retval = UA_STATUSCODE_BADOUTOFMEMORY;
+        goto __done;
+    }
+    //name
+    UA_String name_str = UA_STRING("PANDA ROBOT");
+    //name
+    UA_UInt64 indxe = 12345;
+    UA_Variant_setScalarCopy(&obj_values[0],&name_str,&UA_TYPES[UA_TYPES_STRING]);
+    UA_Variant_setScalarCopy(&obj_values[1],&indxe,&UA_TYPES[UA_TYPES_UINT64]);
+    retval = client_write_mutil(client, node_ids, obj_values, WRITE_NUMS);
+
+    UA_Array_delete(obj_values, WRITE_NUMS, &UA_TYPES[UA_TYPES_VARIANT]);
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+
+
+START_TEST(client_read_mutil_test)
+{
+    UA_StatusCode retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    retval = UA_Client_connect(client, SIMENS_OPC_SERVER);
+    if (retval != UA_STATUSCODE_GOOD)
+        goto __done;
+    //client_read_mutil(UA_Client *client, UA_NodeId node_ids[],UA_Variant values[],size_t nums)
+
+#define NUMS 4
+    UA_NodeId node_ids[NUMS] = {UA_NODEID_NUMERIC(0,50224),
+                                UA_NODEID_NUMERIC(0,50223),
+                                UA_NODEID_NUMERIC(0,50222),
+                                UA_NODEID_NUMERIC(0,50225)};
+
+    UA_Variant *obj_values = UA_Array_new(NUMS,&UA_TYPES[UA_TYPES_VARIANT]);
+    if(NULL == obj_values)
+    {
+        retval = UA_STATUSCODE_BADOUTOFMEMORY;
+        goto __done;
+    }
+    retval = client_read_mutil(client,node_ids,obj_values,NUMS);
+    if(retval != UA_STATUSCODE_GOOD)
+        goto __clear;
+
+   const UA_DataType *obj_types[NUMS]={&UA_TYPES[UA_TYPES_BOOLEAN],&UA_TYPES[UA_TYPES_UINT64],&UA_TYPES[UA_TYPES_STRING],&UA_TYPES[UA_TYPES_DATETIME]};
+    for(size_t i = 0; i < NUMS;++i)
+    {        
+        if (UA_Variant_isEmpty(&obj_values[i]) || obj_values[i].type != obj_types[i])
+        {
+            fprintf(stdout,"get err\n");
+            continue;
+        }
+    }
+//name
+    UA_String str = *(UA_String *)obj_values[2].data;
+    fprintf(stdout,"name:%.*s\n",(int)str.length,str.data);
+//index
+    UA_UInt64 indxe = *(UA_UInt64 *)obj_values[1].data;
+    fprintf(stdout, "index:%ld\n", indxe);
+
+__clear :
+    UA_Array_delete(obj_values, NUMS, &UA_TYPES[UA_TYPES_VARIANT]);
+__done:
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+
 Suite *set_up_client_test(void)
 {
     Suite *test_suit = suite_create("xptd test suit for opc_client");
@@ -135,10 +318,21 @@ Suite *set_up_client_test(void)
     tcase_add_test(test_case_1, client_get_endpoint_test);
     //client_browse_name2nodeid_single_test
     tcase_add_test(test_case_1, client_browse_name2nodeid_single_test);
+    //client_simple_browse_node_test
+    tcase_add_test(test_case_1, client_simplified_browse_node_test);
+    //client_recursive_browse_node_test
+    tcase_add_test(test_case_1, client_read_single_test);
+    //client_read_attribute_test
+    tcase_add_test(test_case_1, client_write_single_test);
+    //client_write_attribute_test
+    tcase_add_test(test_case_1, client_write_single_test);
+    //client_write_mutil_test
+    tcase_add_test(test_case_1, client_write_mutil_test);
+    //client_read_mutil_test
+    tcase_add_test(test_case_1, client_read_mutil_test);
 
-    //test list end
+//test list end
     suite_add_tcase(test_suit, test_case_1);
-  
     return test_suit;
 }
 
