@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:46
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-24 15:38:35
+ * @LastEditTime: 2021-10-19 13:23:26
  */
 
 #include <unistd.h>
@@ -456,3 +456,4 @@ UA_StatusCode client_write_mutil(UA_Client *client, UA_NodeId node_ids[],  UA_Va
     UA_WriteResponse_clear(&write_res);
     return retval;
 }
+
