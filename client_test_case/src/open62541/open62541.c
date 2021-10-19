@@ -24,8 +24,8 @@
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 # define _CRT_SECURE_NO_WARNINGS
 #endif
+#include "opc/open62541.h"
 
-#include "open62541.h"
 
 /**** amalgamated original file "/deps/open62541_queue.h" ****/
 

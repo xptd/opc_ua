@@ -4,15 +4,14 @@
  * @Author: xptd
  * @Date: 2021-09-22 14:20:49
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-23 15:46:44
+ * @LastEditTime: 2021-10-19 14:41:40
  */
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "open62541.h"
-#include "client.h"
-
+#include "client/client.h"
+#include "opc/open62541.h"
 
 typedef struct 
 {

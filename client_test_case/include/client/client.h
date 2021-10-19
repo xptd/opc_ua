@@ -4,15 +4,15 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:01
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-24 15:39:12
+ * @LastEditTime: 2021-10-19 14:40:04
  */
 
 #pragma once
 
 #ifndef CLIENT_H_
 #define CLIENT_H_H
+#include "opc/open62541.h"
 
-#include "open62541.h"
 
 #define ASSERT_GOOD(X)           \
     if (X != UA_STATUSCODE_GOOD) \

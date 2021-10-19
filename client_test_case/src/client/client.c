@@ -4,15 +4,16 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:46
  * @LastEditors: xptd
- * @LastEditTime: 2021-10-19 13:23:26
+ * @LastEditTime: 2021-10-19 14:40:01
  */
 
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "client.h"
-#include "open62541.h"
+#include "client/client.h"
+
+#include "log/zlog.h"
 
 
 // static void sig_handler()

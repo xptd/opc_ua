@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-24 16:16:16
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-24 16:45:33
+ * @LastEditTime: 2021-10-19 14:41:04
  */
 
 #pragma once
@@ -13,7 +13,7 @@
 #define SIMATIC_H_
 
 
-#include "client.h"
+#include "client/client.h"
 
 #define SIMENS_OPC_SERVER "opc.tcp://"
 /**

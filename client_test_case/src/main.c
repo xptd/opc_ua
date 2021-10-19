@@ -21,9 +21,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>
-#include "client.h"
-#include "open62541.h"
-
+#include "client/client.h"
+#include "opc/open62541.h"
 
 #define SIMENS_OPC_SERVER "opc.tcp://localhost:4840"
 
