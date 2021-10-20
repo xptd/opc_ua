@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:46
  * @LastEditors: xptd
- * @LastEditTime: 2021-10-19 14:40:01
+ * @LastEditTime: 2021-10-20 13:34:35
  */
 
 #include <unistd.h>
@@ -12,10 +12,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "client/client.h"
-
-#include "log/zlog.h"
-
-
+//define my logger
+const UA_Logger XPTD_LOGGER = {log_out, NULL, log_clear};
 // static void sig_handler()
 // {
 //     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_CLIENT, "server terminated");
@@ -123,6 +121,24 @@ UA_StatusCode client_connect(const char* endpoint_url)
     UA_Client_delete(client);
     return retval;
 }
+
+UA_StatusCode client_config_logger(const char* endpoint_url)
+{
+
+    if (log_init(LOG_CONFIG_FILE))
+        return UA_STATUSCODE_BAD;   
+    UA_StatusCode  retval;
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig *config = UA_Client_getConfig(client);
+    config->logger = XPTD_LOGGER;
+    UA_ClientConfig_setDefault(config);
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_CLIENT, "client config log\n");
+    retval = UA_Client_connect(client, endpoint_url);
+    UA_Client_disconnect(client);
+    UA_Client_delete(client);
+    return retval;
+}
+
 
 UA_StatusCode client_browse_name2nodeid_single(
     UA_Client *client, 

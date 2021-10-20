@@ -5,6 +5,8 @@
         "string.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "simatic.h": "c"
+        "simatic.h": "c",
+        "zlog.h": "c",
+        "logger.h": "c"
     }
 }

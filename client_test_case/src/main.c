@@ -4,7 +4,7 @@
  * @Author: xptd
  * @Date: 2021-09-22 13:38:07
  * @LastEditors: xptd
- * @LastEditTime: 2021-09-24 15:23:55
+ * @LastEditTime: 2021-10-20 09:19:32
  */
 /*================================================================
 *   Copyright (C) 2021 PANDA Ltd. All rights reserved.
@@ -26,12 +26,16 @@
 
 #define SIMENS_OPC_SERVER "opc.tcp://localhost:4840"
 
-
-
-
 START_TEST(client_connect_test)
 {
     UA_StatusCode retval = client_connect(SIMENS_OPC_SERVER);
+    ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:connect server err:%s", UA_StatusCode_name(retval));
+}
+END_TEST
+
+START_TEST(client_config_logger_test)
+{
+    UA_StatusCode retval = client_config_logger(SIMENS_OPC_SERVER);
     ck_assert_msg(retval == UA_STATUSCODE_GOOD, "ERROR:connect server err:%s", UA_StatusCode_name(retval));
 }
 END_TEST
@@ -311,24 +315,26 @@ Suite *set_up_client_test(void)
     TCase *test_case_1 = tcase_create("opc ua client tcase");
 
 //add test list
-    //client_connect_test
-    tcase_add_test(test_case_1, client_connect_test);
-    //client_get_endpoint_test
-    tcase_add_test(test_case_1, client_get_endpoint_test);
-    //client_browse_name2nodeid_single_test
-    tcase_add_test(test_case_1, client_browse_name2nodeid_single_test);
-    //client_simple_browse_node_test
-    tcase_add_test(test_case_1, client_simplified_browse_node_test);
-    //client_recursive_browse_node_test
-    tcase_add_test(test_case_1, client_read_single_test);
-    //client_read_attribute_test
-    tcase_add_test(test_case_1, client_write_single_test);
-    //client_write_attribute_test
-    tcase_add_test(test_case_1, client_write_single_test);
-    //client_write_mutil_test
-    tcase_add_test(test_case_1, client_write_mutil_test);
-    //client_read_mutil_test
-    tcase_add_test(test_case_1, client_read_mutil_test);
+    // //client_connect_test
+    // tcase_add_test(test_case_1, client_connect_test);
+    // //client_get_endpoint_test
+    // tcase_add_test(test_case_1, client_get_endpoint_test);
+    // //client_browse_name2nodeid_single_test
+    // tcase_add_test(test_case_1, client_browse_name2nodeid_single_test);
+    // //client_simple_browse_node_test
+    // tcase_add_test(test_case_1, client_simplified_browse_node_test);
+    // //client_recursive_browse_node_test
+    // tcase_add_test(test_case_1, client_read_single_test);
+    // //client_read_attribute_test
+    // tcase_add_test(test_case_1, client_write_single_test);
+    // //client_write_attribute_test
+    // tcase_add_test(test_case_1, client_write_single_test);
+    // //client_write_mutil_test
+    // tcase_add_test(test_case_1, client_write_mutil_test);
+    // //client_read_mutil_test
+    // tcase_add_test(test_case_1, client_read_mutil_test);
+    //client_config_logger_test
+    tcase_add_test(test_case_1, client_config_logger_test);
 
 //test list end
     suite_add_tcase(test_suit, test_case_1);

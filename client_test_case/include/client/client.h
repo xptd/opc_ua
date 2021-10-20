@@ -4,15 +4,15 @@
  * @Author: xptd
  * @Date: 2021-09-22 11:22:01
  * @LastEditors: xptd
- * @LastEditTime: 2021-10-19 14:40:04
+ * @LastEditTime: 2021-10-19 16:37:38
  */
 
 #pragma once
 
 #ifndef CLIENT_H_
-#define CLIENT_H_H
+#define CLIENT_H_
 #include "opc/open62541.h"
-
+#include "log/logger.h"
 
 #define ASSERT_GOOD(X)           \
     if (X != UA_STATUSCODE_GOOD) \
@@ -29,6 +29,18 @@
 
 
 UA_StatusCode client_connect(const char *endpoint_url);
+
+/**
+ * @author: xptd
+ * @brief: 
+ * @input: 
+ * @output: 
+ * @return {*}
+ * @others: 
+ * @param {char*} endpoint_url
+ */
+UA_StatusCode client_config_logger(const char* endpoint_url);
+
 /**
  * @author: xptd
  * @brief: 
